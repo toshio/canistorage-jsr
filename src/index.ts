@@ -18,7 +18,7 @@ export interface CanistorageOption {
  * @param identity
  * @returns 
  */
-export async function init({host, canisterId, identity}: CanistorageOption):Promise<_SERVICE> {
+export default async function init({host, canisterId, identity}: CanistorageOption):Promise<_SERVICE> {
   // Fetch root key for certificate validation during development
   // const shouldFetchRootKey = host.includes("127.0.0.1") || host.includes("localhost"); 
   const shouldFetchRootKey = !!host && !host.includes("icp-api.io");
