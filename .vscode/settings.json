@@ -1,0 +1,8 @@
+{
+  "deno.codeLens.testArgs": [
+    "--allow-net=127.0.0.1:4943"
+  ],
+  "deno.config": "deno.json",
+  "deno.enable": true,
+  "deno.lint": true
+}
