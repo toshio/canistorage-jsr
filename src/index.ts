@@ -5,7 +5,7 @@ import type { Identity } from "@dfinity/agent";
 import { idlFactory } from "./declarations/canistorage/canistorage.did.js";
 import type { _SERVICE } from "./declarations/canistorage/canistorage.did.d.ts";
 
-export interface CanistorageOption {
+interface CanistorageOption {
   host?: string;
   canisterId: string;
   identity?: Identity | Promise<Identity>

@@ -1,0 +1,15 @@
+{
+  "tasks": {
+    "version": "deno run --allow-net=127.0.0.1 0001_version.ts",
+    "initialize": "deno run --allow-net=127.0.0.1 0002_initialize.ts",
+    "createDirectory": "deno run --allow-net=127.0.0.1 0003_createDirectory.ts",
+    "upload": "deno run --allow-net=127.0.0.1 0004_upload.ts",
+    "download": "deno run --allow-net=127.0.0.1 0005_download.ts",
+    "delete": "deno run --allow-net=127.0.0.1 0006_delete.ts"
+  },
+  "imports": {
+    "@dfinity/identity-secp256k1": "npm:@dfinity/identity-secp256k1@^2.4.1",
+    "@std/media-types": "jsr:@std/media-types@^1.1.0",
+    "@toshio/canistorage": "jsr:@toshio/canistorage@^0.1.1"
+  }
+}
