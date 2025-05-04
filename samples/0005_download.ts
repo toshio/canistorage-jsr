@@ -15,9 +15,6 @@ try {
   let writeStream = null;
 
   while (true) {
-    console.log(`path: ${canistoragePath}, position:${position}`);
-    console.log(`isString: ${typeof canistoragePath}`)
-
     const result = await canistorage.load(canistoragePath, BigInt(position));
     if (result.Ok) {
       const { download_at, chunk, sha256 } = result.Ok;
@@ -34,6 +31,7 @@ try {
       position = download_at;
     } else {
       console.error(result.Err);
+      exit(1);
     }
   }
 } catch (e) {
