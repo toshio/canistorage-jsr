@@ -38,27 +38,41 @@ async function uploadSmallerFile(sourcePath:string, type:string, canistoragePath
 
 async function uploadLargerFile(sourcePath:string, type:string, canistoragePath:string) {
   const resultBegin = await canistorage.beginUpload(canistoragePath, type, false);
-  if (resultBegin.Ok) {
-    const file = await fs.open(sourcePath, "r");
+  if (resultBegin.Err) {
+    return resultBegin;
+  }
+  const file = await fs.open(sourcePath, "r");
 
-    let start = 0;
-    while (true) {
-      const buffer = Buffer.alloc(1024 * 1024);
-      const { bytesRead } = await file.read(buffer, 0, buffer.length);
-      if (bytesRead === 0) {
-        break;
-      }
-
-      const resultSend = await canistorage.sendData(canistoragePath, BigInt(start), buffer.subarray(0, bytesRead));
-      if (resultSend.Ok) {
-        start += bytesRead;
-        console.log(bytesRead);  
-      } else {
-        return resultSend;
-      }
+  let start = 0;
+  while (true) {
+    const buffer = Buffer.alloc(1024 * 1024);
+    const { bytesRead } = await file.read(buffer, 0, buffer.length);
+    if (bytesRead === 0) {
+      break;
     }
 
-    const resultCommit = await canistorage.commitUpload(canistoragePath, BigInt(start), []);
-    return resultCommit;
+    const resultSend = await canistorage.sendData(canistoragePath, BigInt(start), buffer.subarray(0, bytesRead));
+    if (resultSend.Err) {
+      try {
+        await canistorage.cancelUpload(canistoragePath);
+      } catch (e) {
+        // do nothing
+      }
+      return resultSend;
+    }
+
+    start += bytesRead;
+    console.log(bytesRead);  
   }
+
+  const resultCommit = await canistorage.commitUpload(canistoragePath, BigInt(start), []);
+  if (resultSend.Err) {
+    try {
+    await canistorage.cancelUpload(canistoragePath);
+    } catch (e) {
+      // do nothing
+    }
+  }
+
+  return resultCommit;
 }

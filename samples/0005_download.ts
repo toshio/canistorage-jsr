@@ -16,23 +16,22 @@ try {
 
   while (true) {
     const result = await canistorage.load(canistoragePath, BigInt(position));
-    if (result.Ok) {
-      const { download_at, chunk, sha256 } = result.Ok;
-      console.log(`DEBUG: download_at:${download_at}, sha256:${sha256}`);
-      if (!writeStream) {
-        writeStream = await fs.open(destinationPath, "w");
-      }
-      await writeStream.write(chunk);
-      if (sha256) {
-        await writeStream.close();
-        console.log(`downloaded. ${destinationPath} (size:${download_at}, sha256:${sha256})`)
-        break;
-      }
-      position = download_at;
-    } else {
+    if (result.Err) {
       console.error(result.Err);
       exit(1);
     }
+
+    const { downloaded_at, chunk, sha256 } = result.Ok;
+    if (!writeStream) {
+      writeStream = await fs.open(destinationPath, "w");
+    }
+    await writeStream.write(chunk);
+    if (sha256[0]) { // value of Option sha256
+      await writeStream.close();
+      console.log(`downloaded. ${destinationPath} (size:${downloaded_at})`)
+      break;
+    }
+    position = downloaded_at;
   }
 } catch (e) {
   console.error(e);
